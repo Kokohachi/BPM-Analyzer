@@ -145,9 +145,8 @@ if __name__ == '__main__':
 {yellow}== {end}BPM-Analyzer{yellow} -----------------------------------------------------------
     {yellow}BPM-Analyzer/ BPM解析ツール{end}
     {cyan}Version:{end} 0.1.0
-    {cyan}Developed by:{end}ここはち(@Kokohachi)
     {cyan}Repository:{end}https://github.com/Kokohachi/BPM-Analyzer
-    {green}Reference:{end}https://qiita.com/OkomeChike/items/b4ab7f5ed6ffa1653b94(@OtomeChike)
+    {green}Developed By:{end}https://qiita.com/OkomeChike/items/b4ab7f5ed6ffa1653b94(@OtomeChike)
 {yellow}-------------------------------------------------------------------------------{end}
 """.strip()
 )
