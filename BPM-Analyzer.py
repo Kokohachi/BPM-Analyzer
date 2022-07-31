@@ -3,6 +3,9 @@ from tqdm import tqdm
 import os
 import librosa
 import numpy as np
+
+import matplotlib.pyplot as plt
+
 if os.name == 'nt':
     import ctypes
  
@@ -44,9 +47,32 @@ def cut_sound_file(filename, number):
 def analyze_bpm(seq):
     print(cyan+"BPM")
     for i in range(seq):
-        y, sr = librosa.load(f"output/{i}.wav")
-        tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-        print(f"{yellow}{i}.wav --> BPM : ",end, tempo)
+        duration = 30
+        x_sr = 200
+        bpm_min, bpm_max = 30, 300
+        filepath = f"output/{i}.wav"
+        # 楽曲の信号を読み込む
+
+        y, sr = librosa.load(filepath, offset=38, duration=duration, mono=True)
+
+        # ビート検出用信号の生成
+        # リサンプリング & パワー信号の抽出
+        x = np.abs(librosa.resample(y, sr, x_sr)) ** 2
+        x_len = len(x)
+
+        # 各BPMに対応する複素正弦波行列を生成
+        M = np.zeros((bpm_max, x_len), dtype=complex)
+        for bpm in range(bpm_min, bpm_max): 
+            thete = 2 * np.pi * (bpm/60) * (np.arange(0, x_len) / x_sr)
+            M[bpm] = np.exp(-1j * thete)
+
+        # 各BPMとのマッチング度合い計算
+        #（複素正弦波行列とビート検出用信号との内積）
+        x_bpm = np.abs(np.dot(M, x))
+
+        # BPM　を算出
+        bpm = np.argmax(x_bpm)
+        print(f"{yellow}{i}.wav --> BPM : ",end, bpm)
         
         
 print(
