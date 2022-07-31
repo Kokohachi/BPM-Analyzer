@@ -30,7 +30,8 @@ bold="\033[1m"
 end="\033[0m"
 
 def cut_sound_file(filename, number):
-    sound = AudioSegment.from_file(filename, format="wav")
+    filesuffix = filename.split(".")[-1]
+    sound = AudioSegment.from_file(filename, format=filesuffix)
     sec=sound.duration_seconds
     print(f"{yellow}Total Time(s) : ",end, sec)
     seq=sec/int(number) 
@@ -47,13 +48,13 @@ def cut_sound_file(filename, number):
 def analyze_bpm(seq):
     print(cyan+"BPM")
     for i in range(seq):
-        duration = 30
+        duration = 10
         x_sr = 200
         bpm_min, bpm_max = 30, 300
         filepath = f"output/{i}.wav"
         # 楽曲の信号を読み込む
 
-        y, sr = librosa.load(filepath, offset=38, duration=duration, mono=True)
+        y, sr = librosa.load(filepath)
 
         # ビート検出用信号の生成
         # リサンプリング & パワー信号の抽出
@@ -96,7 +97,7 @@ if file == False:
     os.mkdir("output")
     print(f"{green}Output Directory Created.{end}")
 
-filename = input(f'{yellow}Filename(*.wav) -> {end}')
+filename = input(f'{yellow}Filename -> {end}')
 sequence = input(f'{yellow}Separate by -> {end}')
 qqq=cut_sound_file(filename, sequence)
 print(f"{yellow}Sequence(s)->{end}{qqq}")
