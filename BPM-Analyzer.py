@@ -36,9 +36,9 @@ def cut_sound_file(filename, number):
     print(f"{yellow}Total Time(s) : ",end, sec)
     seq=sec/int(number) 
     seq=round(seq)
-    start=1
+    start=0
     for i in range(seq):
-        ends=start+10
+        ends=start+int(number)
         sound_part = sound[start*1000:ends*1000]
         sound_part.export(f"output/{i}.wav", format="wav")
         print(f"{yellow}{i}.wav --> {green}OK!")
