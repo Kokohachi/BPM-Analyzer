@@ -150,6 +150,10 @@ if file == False:
 filename = input(f'{yellow}Filename or YouTube Link-> {end}')
 if "https://" in filename:
     filename = youtube_download(filename)
+    if "/" in filename:
+        filenames = filename.replace("/", "-")
+        os.rename(filename,filenames)
+        filename = filenames
     print(f"{cyan}Downloaded ->{end} {filename}")
     convert = input(f'{yellow}Convert to mp3?(y/n) {end}')
     if convert == "y":
