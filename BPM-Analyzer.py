@@ -5,6 +5,7 @@ import os
 import librosa
 import numpy as np
 import glob
+from pytube import YouTube
 
 import matplotlib.pyplot as plt
 
@@ -118,6 +119,12 @@ def analyze_bpm(filepath):
     bpm = np.argmax(x_bpm)
     return(bpm)
             
+def youtube_download(URL):
+    print(f"{cyan}Downloading...{end}")
+    yt = YouTube(URL)
+    stream = yt.streams.get_by_itag('140')
+    stream.download()
+    return(stream.default_filename)
         
 print(
 f"""
@@ -140,7 +147,17 @@ if file == False:
     os.mkdir("output")
     print(f"{green}Output Directory Created.{end}")
 
-filename = input(f'{yellow}Filename -> {end}')
+filename = input(f'{yellow}Filename or YouTube Link-> {end}')
+if "https://" in filename:
+    filename = youtube_download(filename)
+    print(f"{cyan}Downloaded ->{end} {filename}")
+    convert = input(f'{yellow}Convert to mp3?(y/n) {end}')
+    if convert == "y":
+        #Use Pydub to Convert to mp3
+        print(f"{cyan}Converting to mp3...{end}")
+        sourceAudio = AudioSegment.from_file(filename, "mp4")
+        sourceAudio.export(filename.replace(".mp4", ".mp3"), format="mp3")
+        print(f"{cyan}Converted to mp3.{end}")
 dic={'y':True,'yes':True,'n':False,'no':False}
 swing = dic[input(f'{yellow}Swing(Y/N) -> {end}').lower()]
 if swing == True:
