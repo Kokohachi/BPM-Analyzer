@@ -129,7 +129,7 @@ print(
 f"""
 \033[1A\r{yellow}== {end}BPM-Analyzer{yellow} -----------------------------------------------------------
     {yellow}BPM-Analyzer/ BPM解析ツール{end}
-    {cyan}Version:{end} 0.2.7
+    {cyan}Version:{end} 0.2.8
     {cyan}Developed by:{end}ここはち(@Kokohachi)
     {cyan}Repository:{end}https://github.com/Kokohachi/BPM-Analyzer
 {yellow}-------------------------------------------------------------------------------{end}
