@@ -41,9 +41,10 @@ def cut_silence_at_start(filename):
     end_trim = silence.detect_leading_silence(sound.reverse())
     duration = len(sound)    
     trimmed_sound = sound[start_trim:duration-end_trim]
-    filename = filename.replace(".mp3","")
+    filenamed = filename.replace(filesuffix,"")
     os.makedirs(f"output/{filename}_output", exist_ok=True)
-    trimmed_sound.export(f"output/{filename}_output/{filename}_cut.wav", format="wav")
+    trimmed_sound.export(f"output/{filename}_output/{filenamed}_cut.mp3", format="mp3")
+    filename = f"output/{filenamed}_output/{filename}_cut.mp3"
     return(filename)
 
 def cut_sound_file(filename, number):
@@ -64,7 +65,7 @@ def cut_sound_file(filename, number):
     return(seq)
 
 def analyze_bpm_swing(filename,seq,export,remain):
-    print("BPMを測定中...")
+    print(f"{cyan}Analyzing...{end}")
     print(cyan+"BPM")
     if export == True:
         with open(f"output/{filename}_output/{filename}_bpm.txt", "w") as f:
@@ -75,26 +76,14 @@ def analyze_bpm_swing(filename,seq,export,remain):
         x_sr = 200
         bpm_min, bpm_max = 30, 300
         filepath = f"output/{filename}_output/{i}.wav"
-        # 楽曲の信号を読み込む
-
         y, sr = librosa.load(filepath)
-
-        # ビート検出用信号の生成
-        # リサンプリング & パワー信号の抽出
         x = np.abs(librosa.resample(y, sr, x_sr)) ** 2
         x_len = len(x)
-
-        # 各BPMに対応する複素正弦波行列を生成
         M = np.zeros((bpm_max, x_len), dtype=complex)
         for bpm in range(bpm_min, bpm_max): 
             thete = 2 * np.pi * (bpm/60) * (np.arange(0, x_len) / x_sr)
             M[bpm] = np.exp(-1j * thete)
-
-        # 各BPMとのマッチング度合い計算
-        #（複素正弦波行列とビート検出用信号との内積）
         x_bpm = np.abs(np.dot(M, x))
-
-        # BPM　を算出
         bpm = np.argmax(x_bpm)
         print(f"{yellow}{i}.wav --> BPM : ",end, bpm)
         if export == True:
@@ -106,30 +95,26 @@ def analyze_bpm_swing(filename,seq,export,remain):
             os.remove(file)
 
 def analyze_bpm(filepath):
-    print("BPMを測定中...")
+    print(f"{cyan}Analyzing...{end}")
     duration = 30
     x_sr = 200
     bpm_min, bpm_max = 30, 300
-    # 楽曲の信号を読み込む
+
 
     y, sr = librosa.load(filepath, offset=38, duration=duration, mono=True)
 
-    # ビート検出用信号の生成
-    # リサンプリング & パワー信号の抽出
     x = np.abs(librosa.resample(y, sr, x_sr)) ** 2
     x_len = len(x)
 
-    # 各BPMに対応する複素正弦波行列を生成
+
     M = np.zeros((bpm_max, x_len), dtype=complex)
     for bpm in range(bpm_min, bpm_max): 
         thete = 2 * np.pi * (bpm/60) * (np.arange(0, x_len) / x_sr)
         M[bpm] = np.exp(-1j * thete)
 
-    # 各BPMとのマッチング度合い計算
-    #（複素正弦波行列とビート検出用信号との内積）
+
     x_bpm = np.abs(np.dot(M, x))
 
-    # BPM　を算出
     bpm = np.argmax(x_bpm)
     return(bpm)
             
@@ -180,9 +165,8 @@ if "https://" in filename:
 dic={'y':True,'yes':True,'n':False,'no':False}
 cut = input(f'{yellow}Cut Silence?(y/n) {end}')
 if dic[cut] == True:
-    print(f"{cyan}Cutting Silence...{end}")
-    cut_silence_at_start(filename)
-    print(f"{cyan}Done cutting Silence ({filename}).{end}")
+    filefile = cut_silence_at_start(filename)
+    print(f"{cyan}Done cutting Silence ({filefile}).{end}")
 swing = dic[input(f'{yellow}Swing(Y/N) -> {end}').lower()]
 if swing == True:
     sequence = input(f'{yellow}Separate by -> {end}')
